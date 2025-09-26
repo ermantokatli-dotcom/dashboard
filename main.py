@@ -5,7 +5,7 @@ app = FastAPI()
 # Test için root endpoint
 @app.get("/")
 def read_root():
-    return {"message": "Railway test başarılı"}
+    return {"message": "Erman tokatlı tarafından hizmet sağlanmıştır"}
 
 # Webhook test endpoint
 @app.post("/webhook")
