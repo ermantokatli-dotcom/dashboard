@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Sürücü Dashboard</title>
+
+  <!-- Tabler CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/css/tabler.min.css" rel="stylesheet">
+
+  <!-- Tabler Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card {
+      border-radius: 16px;
+      background: #fff;
+      color: #1e293b;
+    }
+
+    .action-card {
+      border-radius: 16px;
+      transition: transform 0.2s;
+      color: #fff;
+      cursor: pointer;
+    }
+    .action-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .bg-accent-blue { background: #3b82f6; }
+    .bg-accent-green { background: #22c55e; }
+    .bg-accent-orange { background: #f59e0b; }
+    .bg-accent-red { background: #ef4444; }
+    .bg-accent-indigo { background: #6366f1; }
+
+    /* Alt menü */
+    .bottom-nav {
+      background: #0f172a;
+      border-top: 1px solid #334155;
+      padding: 0.5rem 0;
+      display: flex;
+      justify-content: space-around;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    .bottom-nav a {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+    .bottom-nav a.active {
+      color: #3b82f6;
+    }
+    .bottom-nav i {
+      font-size: 1.4rem;
+      display: block;
+    }
+
+    .content {
+      padding-bottom: 70px; /* alt menü için boşluk */
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page content">
+
+    <!-- Sürücü Bilgisi -->
+    <div class="card shadow-sm border-0 m-3">
+      <div class="card-body">
+        <h3 class="card-title mb-1">Ahmet Yılmaz</h3>
+        <div class="text-muted">Araç: 34 ABC 123 • Mercedes Actros</div>
+      </div>
+    </div>
+
+    <!-- Fonksiyon Kartları -->
+    <div class="container px-3 mb-4">
+      <div class="row row-cols-2 g-3">
+        <div class="col">
+          <div id="btnAracDurum" class="card card-body text-center shadow-sm border-0 action-card bg-accent-blue">
+            <i class="ti ti-truck mb-2 h2"></i>
+            <div>Araç Durum</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-body text-center shadow-sm border-0 action-card bg-accent-green">
+            <i class="ti ti-file-upload mb-2 h2"></i>
+            <div>İrsaliye</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-body text-center shadow-sm border-0 action-card bg-accent-orange">
+            <i class="ti ti-cash mb-2 h2"></i>
+            <div>Harcırah</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-body text-center shadow-sm border-0 action-card bg-accent-red">
+            <i class="ti ti-tools mb-2 h2"></i>
+            <div>Arıza</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card card-body text-center shadow-sm border-0 action-card bg-accent-indigo">
+            <i class="ti ti-calendar mb-2 h2"></i>
+            <div>İzin</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Grafikler -->
+    <div class="container px-3 mb-5">
+      <div class="row g-3">
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header">
+              <h4 class="card-title">Aylık Kilometre</h4>
+            </div>
+            <div class="card-body">
+              <canvas id="kmChart" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="card shadow-sm border-0">
+            <div class="card-header">
+              <h4 class="card-title">Sefer Sayısı</h4>
+            </div>
+            <div class="card-body">
+              <canvas id="tripChart" height="120"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      s
+    </div>
+
+    <!-- Araç Durum Modal -->
+    <div class="modal fade" id="aracDurumModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Araç Durum Bildirimi</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-center">
+            <button class="btn btn-primary w-100 mb-2" onclick="durumSec('Aracım boş')">Aracım boş</button>
+            <button class="btn btn-warning w-100 mb-2" onclick="durumSec('İndirmedeyim')">İndirmedeyim</button>
+            <button class="btn btn-danger w-100" onclick="durumSec('Tahliye bekliyorum')">Tahliye bekliyorum</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onay Modal -->
+    <div class="modal fade" id="onayModal" tabindex="-1">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content text-center">
+          <div class="modal-body">
+            <p id="onayText">Bu bilgi operasyon ekibine gönderilecektir. Onaylıyor musunuz?</p>
+            <div class="mt-3">
+              <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">İptal</button>
+              <button type="button" class="btn btn-primary" onclick="onayla()">Tamam</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Alt Menü -->
+  <div class="bottom-nav">
+    <a href="#" class="active"><i class="ti ti-dashboard"></i>Dashboard</a>
+    <a href="#"><i class="ti ti-message-circle"></i>Mesajlar</a>
+    <a href="#"><i class="ti ti-list-check"></i>Görevler</a>
+    <a href="#"><i class="ti ti-user"></i>Profil</a>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tabler/core@latest/dist/js/tabler.min.js"></script>
+
+  <!-- ✅ Bootstrap Modal için gerekli -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    // Grafikler
+    new Chart(document.getElementById('kmChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran'],
+        datasets: [{
+          label: 'Kilometre',
+          data: [1200, 1800, 1500, 2000, 1700, 2300],
+          backgroundColor: '#3b82f6'
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, responsive: true }
+    });
+
+    new Chart(document.getElementById('tripChart'), {
+      type: 'line',
+      data: {
+        labels: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran'],
+        datasets: [{
+          label: 'Sefer',
+          data: [5, 8, 6, 10, 9, 12],
+          borderColor: '#22c55e',
+          backgroundColor: 'rgba(34,197,94,0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, responsive: true }
+    });
+
+    // Araç Durum ve API
+    let secilenDurum = null;
+
+    document.getElementById('btnAracDurum').addEventListener('click', () => {
+      new bootstrap.Modal(document.getElementById('aracDurumModal')).show();
+    });
+
+    function durumSec(durum) {
+      secilenDurum = durum;
+      document.getElementById('onayText').innerText =
+        `"${durum}" bilgisi operasyon ekibine gönderilecektir. Onaylıyor musunuz?`;
+      bootstrap.Modal.getInstance(document.getElementById('aracDurumModal')).hide();
+      new bootstrap.Modal(document.getElementById('onayModal')).show();
+    }
+
+    function onayla() {
+      bootstrap.Modal.getInstance(document.getElementById('onayModal')).hide();
+      alert(`"${secilenDurum}" bilgisi API'ye gönderilecek!`);
+
+      // 🔹 Workiom API çağrısı
+      fetch("https://api.workiom.com/endpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer API_TOKENIN"
+        },
+        body: JSON.stringify({
+          driver: "Ahmet Yılmaz",
+          aracDurum: secilenDurum,
+          tarih: new Date().toISOString()
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Workiom API yanıtı:", data);
+      })
+      .catch(err => console.error("API hata:", err));
+    }
+  </script>
+</body>
+</html>

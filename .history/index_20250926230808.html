@@ -1,0 +1,81 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+  color: #f8fafc;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Kart tasarımı */
+.card {
+  border-radius: 20px;
+  background: #fff;
+  color: #1e293b;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+/* Fonksiyon kartları */
+.action-card {
+  border-radius: 20px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  color: #fff;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-weight: 500;
+}
+.action-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+}
+
+/* Modern renkler (gradientler) */
+.bg-accent-blue { background: linear-gradient(135deg,#3b82f6,#2563eb); }
+.bg-accent-green { background: linear-gradient(135deg,#22c55e,#16a34a); }
+.bg-accent-orange { background: linear-gradient(135deg,#f59e0b,#d97706); }
+.bg-accent-red { background: linear-gradient(135deg,#ef4444,#b91c1c); }
+.bg-accent-indigo { background: linear-gradient(135deg,#6366f1,#4338ca); }
+
+/* Alt menü */
+.bottom-nav {
+  background: #0f172a;
+  border-top: 1px solid #334155;
+  padding: 0.7rem 0;
+  display: flex;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+.bottom-nav a {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.bottom-nav a.active {
+  color: #3b82f6;
+  font-weight: 600;
+}
+.bottom-nav a:hover {
+  color: #60a5fa;
+}
+.bottom-nav i {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+/* İçerik boşluğu */
+.content {
+  padding-bottom: 80px; /* alt menü için boşluk */
+}
