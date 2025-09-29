@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Sürücü Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tabler Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="p-4">
+    <div class="bg-slate-800 rounded-xl p-4 shadow-md">
+      <h2 class="text-xl font-semibold">Ahmet Yılmaz</h2>
+      <p class="text-slate-400">Araç: 34 ABC 123 • Mercedes Actros</p>
+    </div>
+  </header>
+
+  <!-- Navigasyon Butonları -->
+  <section class="px-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+    <!-- Araç Durum -->
+    <div class="bg-slate-800 rounded-2xl p-5 shadow hover:shadow-lg hover:scale-105 transition cursor-pointer">
+      <div class="flex items-center gap-3">
+        <div class="bg-blue-500 p-3 rounded-full">
+          <i class="ti ti-truck text-white text-2xl"></i>
+        </div>
+        <div>
+          <h4 class="font-semibold text-white">Araç Durum</h4>
+          <p class="text-slate-400 text-sm">Durumunu güncelle</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ✅ Modal -->
+  <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-slate-800 p-6 rounded-2xl shadow-lg w-80">
+      <h3 class="text-lg font-semibold mb-4">Araç Durum Güncelle</h3>
+      
+      <!-- Aracım Boş Butonu -->
+      <button id="emptyBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-xl">
+        Aracım Boş
+      </button>
+
+      <!-- ✅ Mesaj Alanı -->
+      <p id="infoMsg" class="mt-4 text-sm text-green-400 hidden">
+        Araç boş bildirimi operasyon ekiplerine bildirilecektir.
+      </p>
+
+      <!-- Kapat Butonu -->
+      <button id="closeModal" class="mt-4 w-full bg-slate-600 hover:bg-slate-700 text-white py-2 px-4 rounded-xl">
+        Kapat
+      </button>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const statusModal = document.getElementById("statusModal");
+    const emptyBtn = document.getElementById("emptyBtn");
+    const closeModal = document.getElementById("closeModal");
+    const infoMsg = document.getElementById("infoMsg");
+
+    // Araç Durum kartını yakala
+    document.querySelectorAll(".bg-slate-800").forEach(card => {
+      if (card.innerText.includes("Araç Durum")) {
+        card.addEventListener("click", () => {
+          statusModal.classList.remove("hidden");
+          statusModal.classList.add("flex");
+          infoMsg.classList.add("hidden"); // her açılışta sıfırla
+        });
+      }
+    });
+
+    // Kapatma
+    closeModal.addEventListener("click", () => {
+      statusModal.classList.add("hidden");
+      statusModal.classList.remove("flex");
+    });
+
+    // Aracım Boş butonu
+    emptyBtn.addEventListener("click", () => {
+      infoMsg.classList.remove("hidden");
+    });
+  </script>
+
+</body>
+</html>

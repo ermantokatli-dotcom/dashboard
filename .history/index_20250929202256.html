@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Sürücü Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tabler Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="p-4">
+    <div class="bg-slate-800 rounded-xl p-4 shadow-md">
+      <h2 class="text-xl font-semibold">Ahmet Yılmaz</h2>
+      <p class="text-slate-400">Araç: 34 ABC 123 • Mercedes Actros</p>
+    </div>
+  </header>
+
+  <!-- Navigasyon Butonları -->
+ <section class="px-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+
+  <!-- ✅ Araç Durum (id eklendi) -->
+  <div id="statusCard" class="bg-slate-800 rounded-2xl p-5 shadow hover:shadow-lg hover:scale-105 transition cursor-pointer">
+    <div class="flex items-center gap-3">
+      <div class="bg-blue-500 p-3 rounded-full">
+        <i class="ti ti-truck text-white text-2xl"></i>
+      </div>
+      <div>
+        <h4 class="font-semibold text-white">Araç Durum</h4>
+        <p class="text-slate-400 text-sm">Durumunu güncelle</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- diğer kartların kodu aynı kalıyor... -->
+  <div class="bg-slate-800 rounded-2xl p-5 shadow hover:shadow-lg hover:scale-105 transition cursor-pointer">
+    <div class="flex items-center gap-3">
+      <div class="bg-green-500 p-3 rounded-full">
+        <i class="ti ti-file-upload text-white text-2xl"></i>
+      </div>
+      <div>
+        <h4 class="font-semibold text-white">İrsaliye</h4>
+        <p class="text-slate-400 text-sm">Belge yükle</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ... diğer butonları silmedim, aynen bırakabilirsin -->
+</section>
+
+  <!-- Grafikler -->
+  <main class="flex-1 px-4 py-6 space-y-6">
+    <div class="bg-slate-800 rounded-xl p-4 shadow-md">
+      <h3 class="text-lg font-semibold mb-4">Aylık Kilometre</h3>
+      <canvas id="kmChart" height="120"></canvas>
+    </div>
+    <div class="bg-slate-800 rounded-xl p-4 shadow-md">
+      <h3 class="text-lg font-semibold mb-4">Sefer Sayısı</h3>
+      <canvas id="tripChart" height="120"></canvas>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bg-slate-900 border-t border-slate-700 p-3 flex justify-around text-sm text-slate-400">
+    <a href="#" class="flex flex-col items-center text-blue-500">
+      <i class="ti ti-dashboard text-xl"></i>
+      Dashboard
+    </a>
+    <a href="#" class="flex flex-col items-center hover:text-white">
+      <i class="ti ti-message-circle text-xl"></i>
+      Mesajlar
+    </a>
+    <a href="#" class="flex flex-col items-center hover:text-white">
+      <i class="ti ti-list-check text-xl"></i>
+      Görevler
+    </a>
+    <a href="#" class="flex flex-col items-center hover:text-white">
+      <i class="ti ti-user text-xl"></i>
+      Profil
+    </a>
+  </nav>
+
+  <!-- ✅ Modal -->
+  <div id="statusModal" class="fixed inset-0 bg-black bg-opacity-60 hidden items-center justify-center z-50">
+    <div class="bg-slate-800 p-6 rounded-2xl shadow-lg w-80">
+      <h3 class="text-lg font-semibold mb-4">Araç Durum Güncelle</h3>
+      
+      <button id="emptyBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-xl">
+        Aracım Boş
+      </button>
+
+      <p id="infoMsg" class="mt-4 text-sm text-green-400 hidden">
+        Araç boş bildirimi operasyon ekiplerine bildirilecektir.
+      </p>
+
+      <button id="closeModal" class="mt-4 w-full bg-slate-600 hover:bg-slate-700 text-white py-2 px-4 rounded-xl">
+        Kapat
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ Scriptler -->
+  <script>
+  // Kilometre grafiği
+  new Chart(document.getElementById('kmChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran'],
+      datasets: [{
+        label: 'Kilometre',
+        data: [1200, 1800, 1500, 2000, 1700, 2300],
+        backgroundColor: '#3b82f6',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Sefer grafiği
+  new Chart(document.getElementById('tripChart'), {
+    type: 'line',
+    data: {
+      labels: ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran'],
+      datasets: [{
+        label: 'Sefer',
+        data: [5, 8, 6, 10, 9, 12],
+        borderColor: '#22c55e',
+        backgroundColor: 'rgba(34,197,94,0.2)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // ✅ Modal kodları
+  const statusCard = document.getElementById("statusCard");
+  const statusModal = document.getElementById("statusModal");
+  const emptyBtn = document.getElementById("emptyBtn");
+  const closeModal = document.getElementById("closeModal");
+  const infoMsg = document.getElementById("infoMsg");
+
+  statusCard.addEventListener("click", () => {
+    statusModal.classList.remove("hidden");
+    statusModal.classList.add("flex");
+    infoMsg.classList.add("hidden");
+  });
+
+  closeModal.addEventListener("click", () => {
+    statusModal.classList.add("hidden");
+    statusModal.classList.remove("flex");
+  });
+
+  emptyBtn.addEventListener("click", () => {
+    infoMsg.classList.remove("hidden");
+
+    setTimeout(() => {
+      statusModal.classList.add("hidden");
+      statusModal.classList.remove("flex");
+      infoMsg.classList.add("hidden");
+    }, 5000);
+  });
+  </script>
+</body>
+</html>
