@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lojistik Yönetimi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #1a202c;
+      min-height: 100vh;
+    }
+    
+    /* Dark Theme */
+    body.theme-dark {
+      background: #0f1419;
+      color: #e4e7eb;
+    }
+    
+    body.theme-dark .navbar {
+      background: #1a1f2e;
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    body.theme-dark .stat-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+    }
+    
+    body.theme-dark .content-card {
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+    }
+    
+    body.theme-dark .input-field {
+      background: #0f1419;
+      border: 1px solid #2d3748;
+      color: #e4e7eb;
+    }
+    
+    body.theme-dark .table-header {
+      background: #0f1419;
+      border-bottom: 1px solid #2d3748;
+      color: #9ca3af;
+    }
+    
+    body.theme-dark .table-row {
+      border-bottom: 1px solid #2d3748;
+    }
+    
+    body.theme-dark .table-row:hover {
+      background: #151b28;
+    }
+    
+    body.theme-dark .text-muted {
+      color: #9ca3af;
+    }
+    
+    body.theme-dark .text-primary {
+      color: #e4e7eb;
+    }
+    
+    body.theme-dark .btn-ghost {
+      color: #9ca3af;
+      background: transparent;
+    }
+    
+    body.theme-dark .btn-ghost:hover {
+      background: #151b28;
+      color: #e4e7eb;
+    }
+    
+    body.theme-dark .page-btn {
+      background: #0f1419;
+      border: 1px solid #2d3748;
+      color: #9ca3af;
+    }
+    
+    body.theme-dark .page-btn:hover {
+      background: #151b28;
+      color: #e4e7eb;
+    }
+    
+    body.theme-dark .page-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+    
+    /* Light Theme */
+    body.theme-light .navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    body.theme-light .stat-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+    
+    body.theme-light .content-card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+    
+    body.theme-light .input-field {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #1a202c;
+    }
+    
+    body.theme-light .table-header {
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+      color: #6b7280;
+    }
+    
+    body.theme-light .table-row {
+      border-bottom: 1px solid #f3f4f6;
+    }
+    
+    body.theme-light .table-row:hover {
+      background: #f9fafb;
+    }
+    
+    body.theme-light .text-muted {
+      color: #6b7280;
+    }
+    
+    body.theme-light .text-primary {
+      color: #1a202c;
+    }
+    
+    body.theme-light .btn-ghost {
+      color: #6b7280;
+      background: transparent;
+    }
+    
+    body.theme-light .btn-ghost:hover {
+      background: #f3f4f6;
+      color: #1a202c;
+    }
+    
+    body.theme-light .page-btn {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      color: #6b7280;
+    }
+    
+    body.theme-light .page-btn:hover {
+      background: #f9fafb;
+      color: #1a202c;
+    }
+    
+    body.theme-light .page-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+    
+    /* Gray Theme */
+    body.theme-gray {
+      background: #18181b;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .navbar {
+      background: #27272a;
+      border-bottom: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .stat-card {
+      background: #27272a;
+      border: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .content-card {
+      background: #27272a;
+      border: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .input-field {
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .table-header {
+      background: #18181b;
+      border-bottom: 1px solid #3f3f46;
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .table-row {
+      border-bottom: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .table-row:hover {
+      background: #202024;
+    }
+    
+    body.theme-gray .text-muted {
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .text-primary {
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .btn-ghost {
+      color: #a1a1aa;
+      background: transparent;
+    }
+    
+    body.theme-gray .btn-ghost:hover {
+      background: #202024;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .page-btn {
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .page-btn:hover {
+      background: #202024;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .page-btn.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
+    }
+    
+    .navbar {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card {
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .content-card {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .input-field {
+      transition: all 0.2s ease;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    
+    .btn-ghost {
+      transition: all 0.2s ease;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    
+    .table-wrapper::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    .table-wrapper::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+    
+    .table-row {
+      transition: background 0.15s ease;
+    }
+    
+    .page-btn {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+
+<body class="theme-light">
+
+  <nav class="navbar sticky top-0 z-50">
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div>
+          <h1 class="text-xl font-bold text-primary">Lojistik Yönetim Paneli</h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleThemeMenu()" class="btn-ghost p-2 rounded-lg">
+            <i class="ti ti-palette text-xl"></i>
+          </button>
+          <div id="themeMenu" class="hidden absolute right-6 top-16 content-card rounded-lg shadow-xl p-2 flex gap-2">
+            <button onclick="changeTheme('light')" class="w-10 h-10 rounded-lg bg-white hover:scale-105 transition border-2 border-gray-300" title="Açık"></button>
+            <button onclick="changeTheme('gray')" class="w-10 h-10 rounded-lg bg-zinc-800 hover:scale-105 transition border-2 border-zinc-700" title="Gri"></button>
+            <button onclick="changeTheme('dark')" class="w-10 h-10 rounded-lg bg-slate-950 hover:scale-105 transition border-2 border-slate-800" title="Koyu"></button>
+          </div>
+          <button class="btn-primary px-4 py-2 rounded-lg flex items-center gap-2 font-medium">
+            <i class="ti ti-plus"></i>
+            <span class="hidden sm:inline">Yeni Sipariş</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      
+      <div class="stat-card rounded-xl p-5">
+        <div class="flex justify-between items-start mb-3">
+          <div class="bg-gray-100 p-2.5 rounded-lg">
+            <i class="ti ti-clock text-gray-600 text-xl"></i>
+          </div>
+          <span class="text-xs font-medium text-muted">Bekleyen</span>
+        </div>
+        <h3 class="text-3xl font-bold text-primary mb-1">156</h3>
+        <p class="text-sm text-muted">Toplam bekleyen sipariş</p>
+      </div>
+
+      <div class="stat-card rounded-xl p-5">
+        <div class="flex justify-between items-start mb-3">
+          <div class="bg-blue-100 p-2.5 rounded-lg">
+            <i class="ti ti-calendar-event text-blue-600 text-xl"></i>
+          </div>
+          <span class="text-xs font-medium text-muted">Bugün</span>
+        </div>
+        <h3 class="text-3xl font-bold text-primary mb-1">42</h3>
+        <p class="text-sm text-muted">Bugün tedarik edilecek</p>
+      </div>
+
+      <div class="stat-card rounded-xl p-5">
+        <div class="flex justify-between items-start mb-3">
+          <div class="bg-green-100 p-2.5 rounded-lg">
+            <i class="ti ti-circle-check text-green-600 text-xl"></i>
+          </div>
+          <span class="text-xs font-medium text-muted">Tamamlandı</span>
+        </div>
+        <h3 class="text-3xl font-bold text-primary mb-1">28</h3>
+        <p class="text-sm text-muted">Bugün tedarik edilen</p>
+      </div>
+
+      <div class="stat-card rounded-xl p-5">
+        <div class="flex justify-between items-start mb-3">
+          <div class="bg-purple-100 p-2.5 rounded-lg">
+            <i class="ti ti-package text-purple-600 text-xl"></i>
+          </div>
+          <span class="text-xs font-medium text-muted">Bu Ay</span>
+        </div>
+        <h3 class="text-3xl font-bold text-primary mb-1">1,284</h3>
+        <p class="text-sm text-muted">Bu ay tedarik edilen</p>
+      </div>
+
+    </div>
+
+    <div class="content-card rounded-xl p-4 mb-4">
+      <div class="flex flex-wrap gap-3">
+        <input type="text" placeholder="Kayıt kodu veya sipariş kodu ara..." class="input-field px-4 py-2.5 rounded-lg flex-1 min-w-[200px] text-sm">
+        <select class="input-field px-4 py-2.5 rounded-lg text-sm cursor-pointer">
+          <option>Tüm Durumlar</option>
+          <option>Bekleyen</option>
+          <option>Tedarik Ediliyor</option>
+          <option>Tamamlandı</option>
+        </select>
+        <select class="input-field px-4 py-2.5 rounded-lg text-sm cursor-pointer">
+          <option>Tüm Lokasyonlar</option>
+          <option>İstanbul</option>
+          <option>Ankara</option>
+          <option>İzmir</option>
+        </select>
+        <button class="btn-primary px-5 py-2.5 rounded-lg flex items-center gap-2 font-medium text-sm">
+          <i class="ti ti-search"></i>
+          Ara
+        </button>
+      </div>
+    </div>
+
+    <div class="content-card rounded-xl overflow-hidden">
+      <div class="p-4 flex flex-wrap justify-between items-center gap-3 border-b border-gray-200">
+        <div>
+          <h2 class="text-lg font-semibold text-primary">Sipariş Listesi</h2>
+          <p class="text-sm text-muted mt-0.5">Tedarik bekleyen siparişler</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-ghost p-2 rounded-lg">
+            <i class="ti ti-download text-lg"></i>
+          </button>
+          <button class="btn-ghost p-2 rounded-lg">
+            <i class="ti ti-refresh text-lg"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="table-header">
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Kayıt Kodu</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Müşteri Sipariş Kodu</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Yükleme Talep Tarihi</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Fatura Başlığı</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Yükleme Müşterisi</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Yükleme İli</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Yükleme İlçesi</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Boşaltma Müşterisi</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Boşaltma İli</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Boşaltma İlçesi</th>
+              <th class="px-4 py-3 text-center font-medium whitespace-nowrap">Uğrama</th>
+              <th class="px-4 py-3 text-center font-medium whitespace-nowrap">Palet</th>
+              <th class="px-4 py-3 text-center font-medium whitespace-nowrap">Tonaj</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Yük Türü</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Araç Türü</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Mail Adresi</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Telefon</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Açıklama</th>
+              <th class="px-4 py-3 text-left font-medium whitespace-nowrap">Oluşturma Tarihi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-600">10374</td>
+              <td class="px-4 py-3 text-muted">MS-4521</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">23.09.2025</td>
+              <td class="px-4 py-3 text-primary">DEKNA LOJİSTİK</td>
+              <td class="px-4 py-3 text-primary">ABC Kimya</td>
+              <td class="px-4 py-3 text-muted">İstanbul</td>
+              <td class="px-4 py-3 text-muted">Tuzla</td>
+              <td class="px-4 py-3 text-primary">XYZ Gıda</td>
+              <td class="px-4 py-3 text-muted">Ankara</td>
+              <td class="px-4 py-3 text-muted">Yenimahalle</td>
+              <td class="px-4 py-3 text-center font-medium">1</td>
+              <td class="px-4 py-3 text-center font-medium">24</td>
+              <td class="px-4 py-3 text-center font-medium">18</td>
+              <td class="px-4 py-3 text-primary">Temizlik Ürünü</td>
+              <td class="px-4 py-3 text-primary">Tır</td>
+              <td class="px-4 py-3 text-muted">musteri@abc.com</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">+90 532 123 45 67</td>
+              <td class="px-4 py-3 text-muted">Acil teslimat</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">22.09.2025</td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-600">10375</td>
+              <td class="px-4 py-3 text-muted">MS-4522</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">24.09.2025</td>
+              <td class="px-4 py-3 text-primary">MEGA LOJİSTİK</td>
+              <td class="px-4 py-3 text-primary">DEF Gıda</td>
+              <td class="px-4 py-3 text-muted">İzmir</td>
+              <td class="px-4 py-3 text-muted">Bornova</td>
+              <td class="px-4 py-3 text-primary">PQR Market</td>
+              <td class="px-4 py-3 text-muted">Bursa</td>
+              <td class="px-4 py-3 text-muted">Osmangazi</td>
+              <td class="px-4 py-3 text-center font-medium">2</td>
+              <td class="px-4 py-3 text-center font-medium">32</td>
+              <td class="px-4 py-3 text-center font-medium">22</td>
+              <td class="px-4 py-3 text-primary">Gıda</td>
+              <td class="px-4 py-3 text-primary">Kamyon</td>
+              <td class="px-4 py-3 text-muted">info@def.com</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">+90 533 234 56 78</td>
+              <td class="px-4 py-3 text-muted">Soğuk zincir</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">23.09.2025</td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-600">10376</td>
+              <td class="px-4 py-3 text-muted">MS-4523</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">25.09.2025</td>
+              <td class="px-4 py-3 text-primary">HIZLI KARGO</td>
+              <td class="px-4 py-3 text-primary">GHI Tekstil</td>
+              <td class="px-4 py-3 text-muted">Ankara</td>
+              <td class="px-4 py-3 text-muted">Çankaya</td>
+              <td class="px-4 py-3 text-primary">STU Mağaza</td>
+              <td class="px-4 py-3 text-muted">Antalya</td>
+              <td class="px-4 py-3 text-muted">Muratpaşa</td>
+              <td class="px-4 py-3 text-center font-medium">1</td>
+              <td class="px-4 py-3 text-center font-medium">28</td>
+              <td class="px-4 py-3 text-center font-medium">15</td>
+              <td class="px-4 py-3 text-primary">Tekstil</td>
+              <td class="px-4 py-3 text-primary">Kamyonet</td>
+              <td class="px-4 py-3 text-muted">siparis@ghi.com</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">+90 534 345 67 89</td>
+              <td class="px-4 py-3 text-muted">Hassas ürün</td>
+              <td class="px-4 py-3 text-muted whitespace-nowrap">24.09.2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 border-t border-gray-200 flex flex-wrap justify-between items-center gap-3">
+        <p class="text-sm text-muted">Toplam 3 kayıt gösteriliyor</p>
+        <div class="flex gap-2">
+          <button onclick="changePage('prev')" class="page-btn px-3 py-1.5 rounded-lg text-sm font-medium">Önceki</button>
+          <button onclick="changePage(1)" id="page-1" class="page-btn active px-3 py-1.5 rounded-lg text-sm font-medium">1</button>
+          <button onclick="changePage(2)" id="page-2" class="page-btn px-3 py-1.5 rounded-lg text-sm font-medium">2</button>
+          <button onclick="changePage(3)" id="page-3" class="page-btn px-3 py-1.5 rounded-lg text-sm font-medium">3</button>
+          <button onclick="changePage('next')" class="page-btn px-3 py-1.5 rounded-lg text-sm font-medium">Sonraki</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+<script>
+  let currentPage = 1;
+  
+  function toggleThemeMenu() {
+    const menu = document.getElementById('themeMenu');
+    menu.classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', function(event) {
+    const menu = document.getElementById('themeMenu');
+    const themeButton = event.target.closest('button[onclick="toggleThemeMenu()"]');
+    
+    if (!themeButton && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  function changeTheme(theme) {
+    document.body.className = 'theme-' + theme;
+    document.getElementById('themeMenu').classList.add('hidden');
+  }
+  
+  function changePage(page) {
+    if (page === 'prev') {
+      if (currentPage > 1) currentPage--;
+      else return;
+    } else if (page === 'next') {
+      if (currentPage < 3) currentPage++;
+      else return;
+    } else {
+      currentPage = page;
+    }
+    
+    for (let i = 1; i <= 3; i++) {
+      const btn = document.getElementById('page-' + i);
+      if (btn) {
+        btn.classList.remove('active');
+      }
+    }
+    
+    const activeBtn = document.getElementById('page-' + currentPage);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>

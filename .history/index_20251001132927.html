@@ -1,0 +1,1038 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lojistik Yönetimi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      display: flex;
+    }
+    
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+    }
+    
+    .main-wrapper.sidebar-open {
+      margin-left: 280px;
+    }
+    
+    @media (max-width: 768px) {
+      .main-wrapper.sidebar-open {
+        margin-left: 0;
+      }
+    }
+    
+    /* Sidebar Styles */
+    .sidebar {
+      position: fixed;
+      left: -280px;
+      top: 0;
+      width: 280px;
+      height: 100vh;
+      z-index: 1000;
+      transition: left 0.3s ease;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+    
+    .sidebar.open {
+      left: 0;
+    }
+    
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -100%;
+        width: 100%;
+        max-width: 320px;
+      }
+    }
+    
+    /* Sidebar Dark Theme */
+    body.theme-dark .sidebar {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      border-right: 1px solid #334155;
+    }
+    
+    body.theme-dark .sidebar-header {
+      background: rgba(51, 65, 85, 0.5);
+      border-bottom: 1px solid #334155;
+    }
+    
+    body.theme-dark .menu-item {
+      color: #cbd5e1;
+    }
+    
+    body.theme-dark .menu-item:hover {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.2) 100%);
+      color: #3b82f6;
+    }
+    
+    body.theme-dark .menu-item.active {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.25) 100%);
+      color: #3b82f6;
+      border-left: 3px solid #3b82f6;
+    }
+    
+    body.theme-dark .menu-category {
+      color: #64748b;
+    }
+    
+    body.theme-dark .sidebar::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    
+    body.theme-dark .sidebar::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+    
+    body.theme-dark .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+    
+    /* Sidebar Black Theme */
+    body.theme-gray .sidebar {
+      background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+      border-right: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .sidebar-header {
+      background: rgba(63, 63, 70, 0.5);
+      border-bottom: 1px solid #3f3f46;
+    }
+    
+    body.theme-gray .menu-item {
+      color: #d4d4d8;
+    }
+    
+    body.theme-gray .menu-item:hover {
+      background: linear-gradient(90deg, rgba(161, 161, 170, 0.1) 0%, rgba(161, 161, 170, 0.2) 100%);
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .menu-item.active {
+      background: linear-gradient(90deg, rgba(161, 161, 170, 0.15) 0%, rgba(161, 161, 170, 0.25) 100%);
+      color: #e4e4e7;
+      border-left: 3px solid #71717a;
+    }
+    
+    body.theme-gray .menu-category {
+      color: #52525b;
+    }
+    
+    body.theme-gray .sidebar::-webkit-scrollbar-track {
+      background: #18181b;
+    }
+    
+    body.theme-gray .sidebar::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+    }
+    
+    body.theme-gray .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+    }
+    
+    /* Sidebar Light Theme */
+    body.theme-light .sidebar {
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      border-right: 1px solid #e2e8f0;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    body.theme-light .sidebar-header {
+      background: rgba(241, 245, 249, 0.8);
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    body.theme-light .menu-item {
+      color: #475569;
+    }
+    
+    body.theme-light .menu-item:hover {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.1) 100%);
+      color: #3b82f6;
+    }
+    
+    body.theme-light .menu-item.active {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.15) 100%);
+      color: #1e40af;
+      border-left: 3px solid #3b82f6;
+    }
+    
+    body.theme-light .menu-category {
+      color: #94a3b8;
+    }
+    
+    body.theme-light .sidebar::-webkit-scrollbar-track {
+      background: #f8fafc;
+    }
+    
+    body.theme-light .sidebar::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+    }
+    
+    body.theme-light .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .menu-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .menu-item i {
+      transition: transform 0.2s ease;
+    }
+    
+    .menu-item:hover i {
+      transform: translateX(3px);
+    }
+    
+    .menu-item.active i {
+      transform: scale(1.1);
+    }
+    
+    /* Blue Theme (Default) */
+    body.theme-dark {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+    }
+    
+    body.theme-dark .main-card {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid #334155;
+      backdrop-filter: blur(10px);
+    }
+    
+    body.theme-dark .input-field {
+      background: #334155;
+      color: #e2e8f0;
+      border: 1px solid #475569;
+    }
+    
+    body.theme-dark .input-field::placeholder {
+      color: #94a3b8;
+    }
+    
+    body.theme-dark .table-header {
+      background: #334155;
+      color: #cbd5e1;
+    }
+    
+    body.theme-dark .table-row:hover {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.15) 50%, rgba(59, 130, 246, 0.08) 100%);
+      transform: translateX(4px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    body.theme-dark .text-secondary {
+      color: #94a3b8;
+    }
+    
+    body.theme-dark .text-primary {
+      color: #e2e8f0;
+    }
+    
+    body.theme-dark .btn-icon {
+      background: #334155;
+      color: #cbd5e1;
+    }
+    
+    body.theme-dark .btn-icon:hover {
+      background: #475569;
+      color: #e2e8f0;
+    }
+    
+    body.theme-dark .page-btn {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    
+    body.theme-dark .page-btn:hover {
+      background: #475569;
+    }
+    
+    body.theme-dark .page-btn.active {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+    
+    body.theme-dark .border-divider {
+      border-color: #334155;
+    }
+    
+    /* Black Theme */
+    body.theme-gray {
+      background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .main-card {
+      background: rgba(39, 39, 42, 0.8);
+      border: 1px solid #3f3f46;
+      backdrop-filter: blur(10px);
+    }
+    
+    body.theme-gray .input-field {
+      background: #3f3f46;
+      color: #e4e4e7;
+      border: 1px solid #52525b;
+    }
+    
+    body.theme-gray .input-field::placeholder {
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .table-header {
+      background: #3f3f46;
+      color: #d4d4d8;
+    }
+    
+    body.theme-gray .table-row:hover {
+      background: linear-gradient(90deg, rgba(161, 161, 170, 0.05) 0%, rgba(161, 161, 170, 0.12) 50%, rgba(161, 161, 170, 0.05) 100%);
+      transform: translateX(4px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    body.theme-gray .text-secondary {
+      color: #a1a1aa;
+    }
+    
+    body.theme-gray .text-primary {
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .btn-icon {
+      background: #3f3f46;
+      color: #d4d4d8;
+    }
+    
+    body.theme-gray .btn-icon:hover {
+      background: #52525b;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .page-btn {
+      background: #3f3f46;
+      color: #e4e4e7;
+    }
+    
+    body.theme-gray .page-btn:hover {
+      background: #52525b;
+    }
+    
+    body.theme-gray .page-btn.active {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+    
+    body.theme-gray .border-divider {
+      border-color: #3f3f46;
+    }
+    
+    /* Light Theme */
+    body.theme-light {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #1e293b;
+    }
+    
+    body.theme-light .main-card {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #e2e8f0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    
+    body.theme-light .input-field {
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+    }
+    
+    body.theme-light .input-field:focus {
+      background: #ffffff;
+      border-color: #3b82f6;
+    }
+    
+    body.theme-light .input-field::placeholder {
+      color: #64748b;
+    }
+    
+    body.theme-light .table-header {
+      background: #f1f5f9;
+      color: #334155;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    
+    body.theme-light .table-row {
+      border-bottom: 1px solid #f1f5f9;
+    }
+    
+    body.theme-light .table-row:hover {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.04) 0%, rgba(59, 130, 246, 0.08) 50%, rgba(59, 130, 246, 0.04) 100%);
+      transform: translateX(4px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    body.theme-light .text-secondary {
+      color: #64748b;
+    }
+    
+    body.theme-light .text-primary {
+      color: #0f172a;
+    }
+    
+    body.theme-light .btn-icon {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    
+    body.theme-light .btn-icon:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+      border-color: #cbd5e1;
+    }
+    
+    body.theme-light .page-btn {
+      background: #f8fafc;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+    
+    body.theme-light .page-btn:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    
+    body.theme-light .page-btn.active {
+      background: #3b82f6;
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+    
+    body.theme-light .border-divider {
+      border-color: #e2e8f0;
+    }
+    
+    body.theme-light .stat-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    }
+    
+    body.theme-light .stat-card:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
+    /* Stat card colors for light theme */
+    body.theme-light .stat-card.stat-pending {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+    
+    body.theme-light .stat-card.stat-today {
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    }
+    
+    body.theme-light .stat-card.stat-completed {
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    }
+    
+    body.theme-light .stat-card.stat-monthly {
+      background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+    }
+    
+    body.theme-light .stat-card .stat-icon {
+      background: rgba(255, 255, 255, 0.7);
+    }
+    
+    body.theme-light .stat-card .stat-title {
+      color: #475569;
+    }
+    
+    body.theme-light .stat-card .stat-value {
+      color: #0f172a;
+    }
+    
+    body.theme-light .stat-card .stat-subtitle {
+      color: #64748b;
+    }
+    
+    body.theme-light .stat-card .stat-icon i {
+      color: #1e293b;
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #3b82f6 rgba(59, 130, 246, 0.1);
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+      height: 12px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.1) 100%);
+      border-radius: 10px;
+      margin: 0 10px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 10px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: all 0.3s ease;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, #2563eb 0%, #1d4ed8 100%);
+      border: 2px solid rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+    
+    body.theme-light .table-wrapper::-webkit-scrollbar-track {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.08) 100%);
+    }
+    
+    .table-row {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .table-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .table-row:hover::before {
+      opacity: 1;
+    }
+    
+    .input-field {
+      transition: all 0.2s ease;
+    }
+    
+    .input-field:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: #ffffff;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-icon {
+      transition: all 0.2s ease;
+    }
+    
+    .page-btn {
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+
+<body class="theme-dark">
+
+  <!-- Sidebar Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+            <i class="ti ti-truck-delivery text-white text-xl"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-lg text-primary">Lojistik</h2>
+            <p class="text-xs text-secondary">Yönetim Paneli</p>
+          </div>
+        </div>
+        <button onclick="toggleSidebar()" class="btn-icon p-2 rounded-lg md:hidden">
+          <i class="ti ti-x text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <nav class="p-4">
+      <div class="mb-6">
+        <div class="menu-category text-xs font-semibold uppercase tracking-wider px-3 py-2 mb-2">
+          Genel
+        </div>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1 active">
+          <i class="ti ti-home text-lg"></i>
+          <span class="font-medium">Ana Sayfa</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-layout-dashboard text-lg"></i>
+          <span class="font-medium">Dashboard</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-chart-bar text-lg"></i>
+          <span class="font-medium">Raporlar</span>
+        </a>
+      </div>
+
+      <div class="mb-6">
+        <div class="menu-category text-xs font-semibold uppercase tracking-wider px-3 py-2 mb-2">
+          Tedarik Yönetimi
+        </div>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-clock text-lg"></i>
+          <span class="font-medium">Bekleyen Siparişler</span>
+          <span class="ml-auto bg-blue-500 text-white text-xs px-2 py-1 rounded-full">156</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-truck-loading text-lg"></i>
+          <span class="font-medium">Tedarik Ediliyor</span>
+          <span class="ml-auto bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">42</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-circle-check text-lg"></i>
+          <span class="font-medium">Tedarik Edilen</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-package text-lg"></i>
+          <span class="font-medium">Tüm Siparişler</span>
+        </a>
+      </div>
+
+      <div class="mb-6">
+        <div class="menu-category text-xs font-semibold uppercase tracking-wider px-3 py-2 mb-2">
+          Operasyonlar
+        </div>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-map-pin text-lg"></i>
+          <span class="font-medium">Rota Planlama</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-truck text-lg"></i>
+          <span class="font-medium">Araç Yönetimi</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-users text-lg"></i>
+          <span class="font-medium">Sürücü Yönetimi</span>
+        </a>
+      </div>
+
+      <div class="mb-6">
+        <div class="menu-category text-xs font-semibold uppercase tracking-wider px-3 py-2 mb-2">
+          Ayarlar
+        </div>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-building text-lg"></i>
+          <span class="font-medium">Müşteri Yönetimi</span>
+        </a>
+        <a href="#" class="menu-item flex items-center gap-3 px-4 py-3 rounded-lg mb-1">
+          <i class="ti ti-settings text-lg"></i>
+          <span class="font-medium">Genel Ayarlar</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Wrapper -->
+  <div class="main-wrapper" id="mainWrapper">
+
+  <header class="p-4 sm:p-6">
+    <div class="main-card rounded-xl p-5 sm:p-6">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSidebar()" class="btn-icon p-2.5 rounded-lg">
+            <i class="ti ti-menu-2 text-lg"></i>
+          </button>
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-primary">Lojistik Yönetim Paneli</h1>
+            <p class="text-secondary text-sm mt-1">Sipariş ve Tedarik İşlemleri</p>
+          </div>
+        </div>
+        <div class="flex gap-2 items-center">
+          <div class="relative">
+            <div id="themeMenu" class="hidden absolute right-full top-1/2 -translate-y-1/2 mr-2 main-card rounded-lg shadow-xl z-50 p-1.5 flex gap-1.5">
+              <button onclick="changeTheme('dark')" class="w-8 h-8 rounded-md bg-gradient-to-br from-[#1e293b] to-[#1e40af] hover:scale-110 transition border border-blue-900" title="Koyu Mavi"></button>
+              <button onclick="changeTheme('gray')" class="w-8 h-8 rounded-md bg-gradient-to-br from-[#000000] to-[#18181b] hover:scale-110 transition border border-zinc-800" title="Siyah"></button>
+              <button onclick="changeTheme('light')" class="w-8 h-8 rounded-md bg-gradient-to-br from-[#f8fafc] to-[#e2e8f0] hover:scale-110 transition border border-slate-300" title="Açık"></button>
+            </div>
+            <button onclick="toggleThemeMenu()" class="btn-icon p-2.5 rounded-lg">
+              <i class="ti ti-palette text-lg"></i>
+            </button>
+          </div>
+          <button class="btn-primary px-5 py-2.5 rounded-lg flex items-center gap-2 font-medium">
+            <i class="ti ti-plus"></i>
+            <span>Yeni Sipariş</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="px-4 sm:px-6 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <div class="stat-card stat-pending bg-gradient-to-br from-slate-600 to-slate-700 rounded-xl p-5 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="stat-title text-slate-200 text-xs sm:text-sm font-medium mb-1">Toplam Bekleyen Sipariş Sayısı</p>
+            <h3 class="stat-value text-3xl sm:text-4xl font-bold text-white">156</h3>
+            <p class="stat-subtitle text-slate-300 text-xs mt-1">Son 30 gün</p>
+          </div>
+          <div class="stat-icon bg-white bg-opacity-20 p-3 sm:p-4 rounded-xl">
+            <i class="ti ti-clock text-white text-2xl sm:text-3xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-today bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-5 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="stat-title text-blue-100 text-xs sm:text-sm font-medium mb-1">Bugün Tedarik Edilecek Sipariş Sayısı</p>
+            <h3 class="stat-value text-3xl sm:text-4xl font-bold text-white">42</h3>
+            <p class="stat-subtitle text-blue-200 text-xs mt-1">Planlanan teslimatlar</p>
+          </div>
+          <div class="stat-icon bg-white bg-opacity-20 p-3 sm:p-4 rounded-xl">
+            <i class="ti ti-calendar-event text-white text-2xl sm:text-3xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-completed bg-gradient-to-br from-green-600 to-green-700 rounded-xl p-5 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="stat-title text-green-100 text-xs sm:text-sm font-medium mb-1">Bugün Tedarik Edilen Sipariş Sayısı</p>
+            <h3 class="stat-value text-3xl sm:text-4xl font-bold text-white">28</h3>
+            <p class="stat-subtitle text-green-200 text-xs mt-1">Tamamlanan</p>
+          </div>
+          <div class="stat-icon bg-white bg-opacity-20 p-3 sm:p-4 rounded-xl">
+            <i class="ti ti-circle-check text-white text-2xl sm:text-3xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-monthly bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl p-5 sm:p-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="stat-title text-purple-100 text-xs sm:text-sm font-medium mb-1">Bu Ay Tedarik Edilen Sipariş Sayısı</p>
+            <h3 class="stat-value text-3xl sm:text-4xl font-bold text-white">1,284</h3>
+            <p class="stat-subtitle text-purple-200 text-xs mt-1">Aylık toplam</p>
+          </div>
+          <div class="stat-icon bg-white bg-opacity-20 p-3 sm:p-4 rounded-xl">
+            <i class="ti ti-package text-white text-2xl sm:text-3xl"></i>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="px-4 sm:px-6 mb-4">
+    <div class="main-card rounded-xl p-4 sm:p-5">
+      <div class="flex flex-wrap gap-3">
+        <input type="text" placeholder="Kayıt kodu veya sipariş kodu ara..." class="input-field px-4 py-2.5 rounded-lg flex-1 min-w-[200px] text-sm">
+        <select class="input-field px-4 py-2.5 rounded-lg text-sm cursor-pointer min-w-[180px]">
+          <option>Tüm Durumlar</option>
+          <option>Bekleyen</option>
+          <option>Tedarik Ediliyor</option>
+          <option>Tamamlandı</option>
+        </select>
+        <select class="input-field px-4 py-2.5 rounded-lg text-sm cursor-pointer min-w-[180px]">
+          <option>Tüm Lokasyonlar</option>
+          <option>İstanbul</option>
+          <option>Ankara</option>
+          <option>İzmir</option>
+          <option>Bursa</option>
+        </select>
+        <button class="btn-primary px-6 py-2.5 rounded-lg flex items-center gap-2 font-medium text-sm">
+          <i class="ti ti-filter"></i>
+          Filtrele
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-1 px-4 sm:px-6 pb-6">
+    <div class="main-card rounded-xl overflow-hidden">
+      <div class="p-4 sm:p-5 border-b border-divider flex flex-wrap justify-between items-center gap-3">
+        <div>
+          <h3 class="text-lg sm:text-xl font-bold text-primary">Sipariş Listesi</h3>
+          <p class="text-secondary text-sm mt-1">Tedarik bekleyen siparişler</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="btn-icon p-2.5 rounded-lg">
+            <i class="ti ti-download text-lg"></i>
+          </button>
+          <button class="btn-icon p-2.5 rounded-lg">
+            <i class="ti ti-refresh text-lg"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-wrapper">
+        <table class="w-full text-sm">
+          <thead class="table-header sticky top-0 z-10">
+            <tr>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Kayıt Kodu</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Müşteri Sipariş Kodu</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Yükleme Talep Tarihi</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Fatura Başlığı</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Yükleme Müşterisi</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Yükleme İli</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Yükleme İlçesi</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Boşaltma Müşterisi</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Boşaltma İli</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Boşaltma İlçesi</th>
+              <th class="px-4 py-3 text-center font-semibold whitespace-nowrap">Uğrama Sayısı</th>
+              <th class="px-4 py-3 text-center font-semibold whitespace-nowrap">Palet Sayısı</th>
+              <th class="px-4 py-3 text-center font-semibold whitespace-nowrap">Tonaj</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Yük Türü</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Araç Türü</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Müşteri Mail Adresi</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Müşteri Telefon</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Açıklama</th>
+              <th class="px-4 py-3 text-left font-semibold whitespace-nowrap">Oluşturulma Tarihi</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-700">
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-400">10374</td>
+              <td class="px-4 py-3 text-secondary">MS-4521</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">23.09.2025</td>
+              <td class="px-4 py-3 text-primary">DEKNA LOJİSTİK</td>
+              <td class="px-4 py-3 text-primary">ABC Kimya</td>
+              <td class="px-4 py-3 text-secondary">İstanbul</td>
+              <td class="px-4 py-3 text-secondary">Tuzla</td>
+              <td class="px-4 py-3 text-primary">XYZ Gıda</td>
+              <td class="px-4 py-3 text-secondary">Ankara</td>
+              <td class="px-4 py-3 text-secondary">Yenimahalle</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">1</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">24</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">18</td>
+              <td class="px-4 py-3 text-primary">Temizlik Ürünü</td>
+              <td class="px-4 py-3 text-primary">Tır</td>
+              <td class="px-4 py-3 text-secondary">musteri@abc.com</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">+90 532 123 45 67</td>
+              <td class="px-4 py-3 text-secondary">Acil teslimat</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">22.09.2025</td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-400">10375</td>
+              <td class="px-4 py-3 text-secondary">MS-4522</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">24.09.2025</td>
+              <td class="px-4 py-3 text-primary">MEGA LOJİSTİK</td>
+              <td class="px-4 py-3 text-primary">DEF Gıda</td>
+              <td class="px-4 py-3 text-secondary">İzmir</td>
+              <td class="px-4 py-3 text-secondary">Bornova</td>
+              <td class="px-4 py-3 text-primary">PQR Market</td>
+              <td class="px-4 py-3 text-secondary">Bursa</td>
+              <td class="px-4 py-3 text-secondary">Osmangazi</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">2</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">32</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">22</td>
+              <td class="px-4 py-3 text-primary">Gıda</td>
+              <td class="px-4 py-3 text-primary">Kamyon</td>
+              <td class="px-4 py-3 text-secondary">info@def.com</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">+90 533 234 56 78</td>
+              <td class="px-4 py-3 text-secondary">Soğuk zincir</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">23.09.2025</td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-4 py-3 font-semibold text-blue-400">10376</td>
+              <td class="px-4 py-3 text-secondary">MS-4523</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">25.09.2025</td>
+              <td class="px-4 py-3 text-primary">HIZLI KARGO</td>
+              <td class="px-4 py-3 text-primary">GHI Tekstil</td>
+              <td class="px-4 py-3 text-secondary">Ankara</td>
+              <td class="px-4 py-3 text-secondary">Çankaya</td>
+              <td class="px-4 py-3 text-primary">STU Mağaza</td>
+              <td class="px-4 py-3 text-secondary">Antalya</td>
+              <td class="px-4 py-3 text-secondary">Muratpaşa</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">1</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">28</td>
+              <td class="px-4 py-3 text-center font-semibold text-white-400">15</td>
+              <td class="px-4 py-3 text-primary">Tekstil</td>
+              <td class="px-4 py-3 text-primary">Kamyonet</td>
+              <td class="px-4 py-3 text-secondary">siparis@ghi.com</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">+90 534 345 67 89</td>
+              <td class="px-4 py-3 text-secondary">Hassas ürün</td>
+              <td class="px-4 py-3 text-secondary whitespace-nowrap">24.09.2025</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-4 border-t border-divider flex flex-wrap justify-between items-center gap-3">
+        <p class="text-secondary text-sm">Toplam 3 kayıt gösteriliyor</p>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="changePage('prev')" class="page-btn px-3 py-2 rounded-lg text-sm font-medium">Önceki</button>
+          <button onclick="changePage(1)" id="page-1" class="page-btn active px-3 py-2 rounded-lg text-sm font-medium">1</button>
+          <button onclick="changePage(2)" id="page-2" class="page-btn px-3 py-2 rounded-lg text-sm font-medium">2</button>
+          <button onclick="changePage(3)" id="page-3" class="page-btn px-3 py-2 rounded-lg text-sm font-medium">3</button>
+          <button onclick="changePage('next')" class="page-btn px-3 py-2 rounded-lg text-sm font-medium">Sonraki</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  </div> <!-- End Main Wrapper -->
+
+<script>
+  let currentPage = 1;
+  let sidebarOpen = false;
+  
+  // Sayfa yüklendiğinde kaydedilmiş tema ve sidebar durumunu uygula
+  window.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    changeTheme(savedTheme, false);
+    
+    // Desktop'ta sidebar'ı otomatik aç
+    if (window.innerWidth >= 768) {
+      openSidebar();
+    }
+  });
+  
+  function toggleSidebar() {
+    if (sidebarOpen) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  }
+  
+  function openSidebar() {
+    sidebarOpen = true;
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebarOverlay').classList.add('active');
+    if (window.innerWidth >= 768) {
+      document.getElementById('mainWrapper').classList.add('sidebar-open');
+    }
+  }
+  
+  function closeSidebar() {
+    sidebarOpen = false;
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.getElementById('mainWrapper').classList.remove('sidebar-open');
+  }
+  
+  // Pencere boyutu değiştiğinde sidebar durumunu kontrol et
+  window.addEventListener('resize', function() {
+    if (window.innerWidth >= 768 && !sidebarOpen) {
+      openSidebar();
+    } else if (window.innerWidth < 768 && sidebarOpen) {
+      document.getElementById('mainWrapper').classList.remove('sidebar-open');
+    }
+  });
+  
+  function toggleThemeMenu() {
+    const menu = document.getElementById('themeMenu');
+    menu.classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', function(event) {
+    const menu = document.getElementById('themeMenu');
+    const themeButton = event.target.closest('button[onclick="toggleThemeMenu()"]');
+    
+    if (!themeButton && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  function changeTheme(theme, shouldSave = true) {
+    const body = document.body;
+    body.className = 'theme-' + theme;
+    document.getElementById('themeMenu').classList.add('hidden');
+    
+    // Temayı localStorage'a kaydet
+    if (shouldSave) {
+      localStorage.setItem('theme', theme);
+    }
+  }
+  
+  function changePage(page) {
+    if (page === 'prev') {
+      if (currentPage > 1) currentPage--;
+      else return;
+    } else if (page === 'next') {
+      if (currentPage < 3) currentPage++;
+      else return;
+    } else {
+      currentPage = page;
+    }
+    
+    for (let i = 1; i <= 3; i++) {
+      const btn = document.getElementById('page-' + i);
+      if (btn) {
+        btn.classList.remove('active');
+      }
+    }
+    
+    const activeBtn = document.getElementById('page-' + currentPage);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
+  }
+</script>
+
+</body>
+</html>

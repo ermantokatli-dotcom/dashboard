@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lojistik Yönetimi</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      transition: all 0.5s ease;
+    }
+    
+    body.theme-gray { background: linear-gradient(135deg, #1f2937 0%, #374151 100%); }
+    body.theme-gray .glass-effect { background: rgba(31, 41, 55, 0.8); }
+    body.theme-gray .bg-slate-800 { background-color: #374151 !important; }
+    body.theme-gray .bg-slate-700 { background-color: #4b5563 !important; }
+    
+    body.theme-dark { background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); }
+    body.theme-dark .glass-effect { background: rgba(20, 20, 20, 0.9); }
+    body.theme-dark .bg-slate-800 { background-color: #1a1a1a !important; }
+    body.theme-dark .bg-slate-700 { background-color: #262626 !important; }
+    
+    body.theme-light { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #1e293b; }
+    body.theme-light .glass-effect { background: rgba(255, 255, 255, 0.9); border-color: rgba(0, 0, 0, 0.1); }
+    body.theme-light .bg-slate-800 { background-color: #ffffff !important; color: #1e293b; }
+    body.theme-light .bg-slate-700 { background-color: #f1f5f9 !important; color: #1e293b; }
+    body.theme-light .text-slate-400 { color: #64748b !important; }
+    body.theme-light .text-slate-300 { color: #475569 !important; }
+    body.theme-light .border-slate-700 { border-color: #e2e8f0 !important; }
+    
+    body.theme-purple { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
+    body.theme-purple .glass-effect { background: rgba(49, 46, 129, 0.8); }
+    body.theme-purple .bg-slate-800 { background-color: #312e81 !important; }
+    body.theme-purple .bg-slate-700 { background-color: #4c1d95 !important; }
+    
+    body.theme-green { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); }
+    body.theme-green .glass-effect { background: rgba(6, 95, 70, 0.8); }
+    body.theme-green .bg-slate-800 { background-color: #065f46 !important; }
+    body.theme-green .bg-slate-700 { background-color: #047857 !important; }
+    
+    .stat-card {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card:hover { transform: translateY(-4px); transition: all 0.3s ease; }
+    
+    .status-badge {
+      font-size: 11px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #475569 #1e293b;
+    }
+    
+    .table-wrapper::-webkit-scrollbar { height: 8px; }
+    .table-wrapper::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    
+    .table-row {
+      transition: background 0.2s ease;
+      position: relative;
+    }
+    
+    .table-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: linear-gradient(180deg, #3b82f6, #06b6d4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .table-row:hover {
+      background: rgba(30, 41, 59, 0.5);
+    }
+    
+    .table-row:hover::before { opacity: 1; }
+    
+    .action-btn { transition: all 0.2s ease; }
+    .action-btn:hover { transform: scale(1.2) rotate(5deg); }
+    
+    .filter-input { transition: all 0.3s ease; }
+    .filter-input:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .glass-effect {
+      background: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .glow-button { position: relative; overflow: hidden; }
+    
+    .glow-button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .glow-button:hover::before { width: 300px; height: 300px; }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <header class="p-4">
+    <div class="glass-effect rounded-2xl p-6 shadow-2xl">
+      <div class="flex flex-wrap justify-between items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+            Lojistik Yönetim Paneli
+          </h2>
+          <p class="text-slate-400 mt-1">Sipariş ve Tedarik İşlemleri</p>
+        </div>
+        <div class="flex gap-3">
+          <div class="relative">
+            <button onclick="toggleThemeMenu()" class="bg-slate-700 hover:bg-slate-600 p-2 rounded-lg flex items-center transition shadow-lg">
+              <i class="ti ti-palette text-lg"></i>
+            </button>
+            <div id="themeMenu" class="hidden absolute right-full mr-2 top-0 bg-slate-800 rounded-lg shadow-2xl border border-slate-700 z-50 p-1.5 flex gap-1.5">
+              <button onclick="changeTheme('dark')" class="w-8 h-8 rounded-md bg-gradient-to-br from-slate-900 to-black hover:scale-110 transition" title="Siyah"></button>
+              <button onclick="changeTheme('gray')" class="w-8 h-8 rounded-md bg-gradient-to-br from-gray-600 to-slate-700 hover:scale-110 transition" title="Koyu Gri"></button>
+              <button onclick="changeTheme('light')" class="w-8 h-8 rounded-md bg-gradient-to-br from-gray-50 to-slate-200 hover:scale-110 transition" title="Beyaz"></button>
+            </div>
+          </div>
+          <button class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 px-6 py-3 rounded-xl flex items-center gap-2 transition glow-button shadow-lg shadow-blue-500/50">
+            <i class="ti ti-plus"></i>
+            <span class="font-semibold">Yeni Sipariş</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <div class="stat-card bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 rounded-2xl p-6 shadow-2xl shadow-blue-500/30">
+      <div class="flex items-center justify-between">
+        <div class="relative z-10">
+          <p class="text-blue-100 text-sm font-medium">Aktif Siparişler</p>
+          <h3 class="text-4xl font-bold text-white mt-2">6,348</h3>
+          <p class="text-blue-200 text-xs mt-1">↑ 12% bu ay</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-4 rounded-2xl backdrop-blur-sm relative z-10">
+          <i class="ti ti-package text-white text-3xl"></i>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-to-br from-green-600 via-green-700 to-emerald-800 rounded-2xl p-6 shadow-2xl shadow-green-500/30">
+      <div class="flex items-center justify-between">
+        <div class="relative z-10">
+          <p class="text-green-100 text-sm font-medium">Teslim Edilen</p>
+          <h3 class="text-4xl font-bold text-white mt-2">1,284</h3>
+          <p class="text-green-200 text-xs mt-1">↑ 8% bu ay</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-4 rounded-2xl backdrop-blur-sm relative z-10">
+          <i class="ti ti-circle-check text-white text-3xl"></i>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-to-br from-amber-600 via-amber-700 to-orange-800 rounded-2xl p-6 shadow-2xl shadow-amber-500/30">
+      <div class="flex items-center justify-between">
+              <div class="relative z-10">
+          <p class="text-amber-100 text-sm font-medium">Yolda</p>
+          <h3 class="text-4xl font-bold text-white mt-2">847</h3>
+          <p class="text-amber-200 text-xs mt-1">↑ 5% bu ay</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-4 rounded-2xl backdrop-blur-sm relative z-10">
+          <i class="ti ti-truck text-white text-3xl"></i>
+        </div>
+      </div>
+    </div>
+    <div class="stat-card bg-gradient-to-br from-red-600 via-red-700 to-rose-800 rounded-2xl p-6 shadow-2xl shadow-red-500/30">
+      <div class="flex items-center justify-between">
+        <div class="relative z-10">
+          <p class="text-red-100 text-sm font-medium">Bekleyen</p>
+          <h3 class="text-4xl font-bold text-white mt-2">156</h3>
+          <p class="text-red-200 text-xs mt-1">↓ 3% bu ay</p>
+        </div>
+        <div class="bg-white bg-opacity-20 p-4 rounded-2xl backdrop-blur-sm relative z-10">
+          <i class="ti ti-clock text-white text-3xl"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-4 mb-4">
+    <div class="glass-effect rounded-2xl p-5 shadow-xl">
+      <div class="flex flex-wrap gap-3">
+        <input type="text" placeholder="🔍 Sevk kodu ara..." class="filter-input bg-slate-700 text-white px-5 py-3 rounded-xl flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+        <select class="filter-input bg-slate-700 text-white px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          <option>📦 Tüm Durumlar</option>
+          <option>🚚 Filo Tedarik Edildi</option>
+          <option>⚡ Spot Tedarik Edildi</option>
+          <option>⏳ Tedarik Başlamadı</option>
+        </select>
+        <select class="filter-input bg-slate-700 text-white px-5 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+          <option>📍 Tüm Lokasyonlar</option>
+          <option>Bursa Karacabey</option>
+          <option>İzmir Ödemiş</option>
+          <option>Ordu Altınordu</option>
+        </select>
+        <button class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 px-8 py-3 rounded-xl transition flex items-center gap-2 glow-button shadow-lg shadow-blue-500/50 font-semibold">
+          <i class="ti ti-filter"></i>
+          Filtrele
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-1 px-4 pb-6">
+    <div class="glass-effect rounded-2xl shadow-2xl overflow-hidden">
+      <div class="p-5 border-b border-slate-700 flex flex-wrap justify-between items-center gap-3">
+        <div>
+          <h3 class="text-xl font-bold">Sipariş Listesi</h3>
+          <p class="text-slate-400 text-sm mt-1">Tüm aktif siparişleriniz</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="action-btn text-slate-400 hover:text-white p-3 bg-slate-700 rounded-xl hover:bg-slate-600 transition">
+            <i class="ti ti-download"></i>
+          </button>
+          <button class="action-btn text-slate-400 hover:text-white p-3 bg-slate-700 rounded-xl hover:bg-slate-600 transition">
+            <i class="ti ti-refresh"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="table-wrapper">
+                <table class="text-sm w-full min-w-max **table-fixed**">
+          <thead class="bg-slate-700 text-slate-300 sticky top-0 z-10">
+  <tr>
+        <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-24** bg-slate-700">Sevk Kodu</th>
+    <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-32** bg-slate-700">Tarih</th>
+    <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-40** bg-slate-700">Durum</th>
+    <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-56** bg-slate-700">Yükleme</th>
+    <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-40** bg-slate-700">Yükleme İl/İlçe</th>
+    <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-64** bg-slate-700">Boşaltma</th>     <th class="px-4 py-4 text-left font-semibold whitespace-nowrap **w-48** bg-slate-700">Boşaltma İl/İlçe</th>     <th class="px-4 py-4 text-center font-semibold whitespace-nowrap **w-20** bg-slate-700">Palet</th>
+    <th class="px-4 py-4 text-center font-semibold whitespace-nowrap **w-20** bg-slate-700">Araç</th>
+    <th class="px-4 py-4 text-center font-semibold whitespace-nowrap **w-24** bg-slate-700">İşlem</th>
+  </tr>
+</thead>
+
+          <tbody class="divide-y divide-slate-700">
+  <tr class="table-row">
+        <td class="px-4 py-4 font-bold text-blue-400 **w-24**">10374</td>
+    <td class="px-4 py-4 text-slate-300 whitespace-nowrap **w-32**">Bugün, 13:20</td>
+    <td class="px-4 py-4 **w-40**">
+      <span class="status-badge bg-blue-600 text-white shadow-lg shadow-blue-500/50">Filo Tedarik</span>
+    </td>
+    <td class="px-4 py-4 text-slate-300 **w-56**">KARACABEY FABRİKA DOĞUŞ ÇAY</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-40**">Bursa Karacabey</td>
+    <td class="px-4 py-4 text-slate-300 **w-64**">BİM BİRLEŞİK MAĞAZALAR A.Ş.</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-48**">Balıkesir, İzmir</td>
+    <td class="px-4 py-4 text-center font-bold text-green-300 **w-20**">33</td>     <td class="px-4 py-4 text-center font-bold text-blue-300 **w-20**">1</td>      <td class="px-4 py-4 text-center **w-24**">
+      <button class="action-btn text-blue-400 hover:text-blue-300 px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition">
+        <i class="ti ti-eye"></i>
+      </button>
+    </td>
+  </tr>
+  <tr class="table-row">
+    <td class="px-4 py-4 font-bold text-blue-400 **w-24**">10459</td>
+    <td class="px-4 py-4 text-slate-300 whitespace-nowrap **w-32**">Bugün, 13:15</td>
+    <td class="px-4 py-4 **w-40**">
+      <span class="status-badge bg-amber-600 text-white shadow-lg shadow-amber-500/50">Bitmiş Ürün</span>
+    </td>
+    <td class="px-4 py-4 text-slate-300 **w-56**">ÖDEMİŞ FABRİKA DOĞUŞ ÇAY</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-40**">İzmir Ödemiş</td>
+    <td class="px-4 py-4 text-slate-300 **w-64**">MSC MARAŞ + ELBİSTAN DEPO</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-48**">K.Maraş Elbistan</td>
+    <td class="px-4 py-4 text-center font-bold text-green-300 **w-20**">32</td>
+    <td class="px-4 py-4 text-center font-bold text-blue-300 **w-20**">1</td>
+    <td class="px-4 py-4 text-center **w-24**">
+      <button class="action-btn text-blue-400 hover:text-blue-300 px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition">
+        <i class="ti ti-eye"></i>
+      </button>
+    </td>
+  </tr>
+  <tr class="table-row">
+    <td class="px-4 py-4 font-bold text-blue-400 **w-24**">10438</td>
+    <td class="px-4 py-4 text-slate-300 whitespace-nowrap **w-32**">Bugün, 13:10</td>
+    <td class="px-4 py-4 **w-40**">
+      <span class="status-badge bg-blue-600 text-white shadow-lg shadow-blue-500/50">Filo Tedarik</span>
+    </td>
+    <td class="px-4 py-4 text-slate-300 **w-56**">ÖDEMİŞ FABRİKA DOĞUŞ ÇAY</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-40**">İzmir Ödemiş</td>
+    <td class="px-4 py-4 text-slate-300 **w-64**">İNAN KARDEŞLER ADANA</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-48**">Adana Yüreğir</td>
+    <td class="px-4 py-4 text-center font-bold text-green-300 **w-20**">33</td>
+    <td class="px-4 py-4 text-center font-bold text-blue-300 **w-20**">1</td>
+    <td class="px-4 py-4 text-center **w-24**">
+      <button class="action-btn text-blue-400 hover:text-blue-300 px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition">
+        <i class="ti ti-eye"></i>
+      </button>
+    </td>
+  </tr>
+  <tr class="table-row">
+    <td class="px-4 py-4 font-bold text-blue-400 **w-24**">10324</td>
+    <td class="px-4 py-4 text-slate-300 whitespace-nowrap **w-32**">Bugün, 12:55</td>
+    <td class="px-4 py-4 **w-40**">
+      <span class="status-badge bg-red-600 text-white shadow-lg shadow-red-500/50">Tedarik Yok</span>
+    </td>
+    <td class="px-4 py-4 text-slate-300 **w-56**">KARACABEY FABRİKA DOĞUŞ ÇAY</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-40**">Bursa Karacabey</td>
+    <td class="px-4 py-4 text-slate-300 **w-64**">BİM BİRLEŞİK MAĞAZALAR A.Ş.</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-48**">Ankara Akyurt</td>
+    <td class="px-4 py-4 text-center font-bold text-green-300 **w-20**">33</td>
+    <td class="px-4 py-4 text-center font-bold text-blue-300 **w-20**">1</td>
+    <td class="px-4 py-4 text-center **w-24**">
+      <button class="action-btn text-blue-400 hover:text-blue-300 px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition">
+        <i class="ti ti-eye"></i>
+      </button>
+    </td>
+  </tr>
+  <tr class="table-row">
+    <td class="px-4 py-4 font-bold text-blue-400 **w-24**">10321</td>
+    <td class="px-4 py-4 text-slate-300 whitespace-nowrap **w-32**">Bugün, 12:55</td>
+    <td class="px-4 py-4 **w-40**">
+      <span class="status-badge bg-blue-600 text-white shadow-lg shadow-blue-500/50">Filo Tedarik</span>
+    </td>
+    <td class="px-4 py-4 text-slate-300 **w-56**">KARACABEY FABRİKA DOĞUŞ ÇAY</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-40**">Bursa Karacabey</td>
+    <td class="px-4 py-4 text-slate-300 **w-64**">YENİ MAĞAZACILIK A.Ş.</td>
+    <td class="px-4 py-4 text-slate-400 whitespace-nowrap **w-48**">İstanbul Esenyurt</td>
+    <td class="px-4 py-4 text-center font-bold text-green-300 **w-20**">33</td>
+    <td class="px-4 py-4 text-center font-bold text-blue-300 **w-20**">1</td>
+    <td class="px-4 py-4 text-center **w-24**">
+      <button class="action-btn text-blue-400 hover:text-blue-300 px-3 py-2 bg-slate-700 rounded-lg hover:bg-slate-600 transition">
+        <i class="ti ti-eye"></i>
+      </button>
+    </td>
+  </tr>
+</tbody>
+
+        </table>
+      </div>
+
+      <div class="p-4 border-t border-slate-700 flex flex-wrap justify-between items-center gap-3">
+        <p class="text-slate-400 text-sm">Toplam 6,348 kayıt gösteriliyor</p>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="changePage('prev')" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">Önceki</button>
+          <button onclick="changePage(1)" id="page-1" class="px-3 py-2 bg-blue-600 text-white rounded-lg">1</button>
+          <button onclick="changePage(2)" id="page-2" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">2</button>
+          <button onclick="changePage(3)" id="page-3" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">3</button>
+          <button onclick="changePage('next')" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition">Sonraki</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script>
+  let currentPage = 1;
+  
+  function toggleThemeMenu() {
+    const menu = document.getElementById('themeMenu');
+    menu.classList.toggle('hidden');
+  }
+
+  document.addEventListener('click', function(event) {
+    const menu = document.getElementById('themeMenu');
+    const themeButton = event.target.closest('button[onclick="toggleThemeMenu()"]');
+    
+    if (!themeButton && !menu.contains(event.target)) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  function changeTheme(theme) {
+    const body = document.body;
+    body.className = body.className.replace(/theme-\w+/g, '').trim();
+    body.classList.add('theme-' + theme);
+    document.getElementById('themeMenu').classList.add('hidden');
+  }
+  
+  function changePage(page) {
+    // Önceki/Sonraki kontrolü
+    if (page === 'prev') {
+      if (currentPage > 1) currentPage--;
+      else return;
+    } else if (page === 'next') {
+      if (currentPage < 3) currentPage++;
+      else return;
+    } else {
+      currentPage = page;
+    }
+    
+    // Tüm sayfa butonlarını sıfırla
+    for (let i = 1; i <= 3; i++) {
+      const btn = document.getElementById('page-' + i);
+      if (btn) {
+        btn.className = 'px-3 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition';
+      }
+    }
+    
+    // Aktif sayfayı vurgula
+    const activeBtn = document.getElementById('page-' + currentPage);
+    if (activeBtn) {
+      activeBtn.className = 'px-3 py-2 bg-blue-600 text-white rounded-lg';
+    }
+    
+    console.log('Aktif Sayfa:', currentPage);
+  }
+</script>
+
+</body>
+</html>
